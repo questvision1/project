@@ -1,0 +1,1 @@
+window.OPENAI_API_KEY = "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";

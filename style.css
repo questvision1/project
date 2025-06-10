@@ -1,0 +1,13 @@
+
+body {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 50px;
+}
+canvas {
+  border: 1px solid #ccc;
+}
+button {
+  font-size: 1.2em;
+  margin-top: 20px;
+}

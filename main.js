@@ -5,9 +5,9 @@ function startListening() {
   recognition.start();
   recognition.onresult = async function (event) {
     const text = event.results[0][0].transcript;
-    document.getElementById("response").innerText = "あなた: " + text;
+    appendMessage("あなた", text);
     const reply = await getChatGPTResponse(text);
-    document.getElementById("response").innerText += "\nユイ: " + reply;
+    appendMessage("ユイ", reply);
     speak(reply);
   };
 }
@@ -15,28 +15,40 @@ function startListening() {
 function sendTextMessage() {
   const input = document.getElementById("userInput").value.trim();
   if (!input) return;
-  document.getElementById("response").innerText = "あなた: " + input;
+  appendMessage("あなた", input);
   getChatGPTResponse(input).then(reply => {
-    document.getElementById("response").innerText += "\nユイ: " + reply;
+    appendMessage("ユイ", reply);
     speak(reply);
   });
   document.getElementById("userInput").value = "";
 }
 
 async function getChatGPTResponse(userInput) {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + window.OPENAI_API_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: userInput }]
-    })
-  });
-  const data = await res.json();
-  return data.choices[0].message.content;
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + window.OPENAI_API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: userInput }]
+      })
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      appendMessage("エラー", "API応答に失敗しました：" + errText);
+      return "申し訳ありません、現在応答できません。";
+    }
+
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    appendMessage("エラー", "接続エラー：" + error.message);
+    return "申し訳ありません、接続に失敗しました。";
+  }
 }
 
 function speak(text) {
@@ -44,4 +56,12 @@ function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
   synth.speak(utterance);
+}
+
+function appendMessage(sender, text) {
+  const chatBox = document.getElementById("response");
+  const message = document.createElement("div");
+  message.innerHTML = `<strong>${sender}:</strong> ${text}`;
+  chatBox.appendChild(message);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }

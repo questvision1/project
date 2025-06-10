@@ -2,12 +2,21 @@
 body {
   font-family: sans-serif;
   text-align: center;
-  margin-top: 50px;
+  margin-top: 40px;
 }
 canvas {
   border: 1px solid #ccc;
 }
-button {
-  font-size: 1.2em;
+#controls {
   margin-top: 20px;
+}
+input[type="text"] {
+  padding: 8px;
+  width: 60%;
+  font-size: 1em;
+}
+button {
+  padding: 8px 12px;
+  font-size: 1em;
+  margin-left: 5px;
 }

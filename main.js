@@ -12,6 +12,17 @@ function startListening() {
   };
 }
 
+function sendTextMessage() {
+  const input = document.getElementById("userInput").value.trim();
+  if (!input) return;
+  document.getElementById("response").innerText = "あなた: " + input;
+  getChatGPTResponse(input).then(reply => {
+    document.getElementById("response").innerText += "\nユイ: " + reply;
+    speak(reply);
+  });
+  document.getElementById("userInput").value = "";
+}
+
 async function getChatGPTResponse(userInput) {
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",

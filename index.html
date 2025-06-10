@@ -9,9 +9,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Live2D × ChatGPTデモ</h1>
+  <h1>Live2D × ChatGPT デモ（音声 + テキスト）</h1>
   <canvas id="live2d" width="300" height="400"></canvas>
-  <button onclick="startListening()">🎙 話しかける</button>
+  <div id="controls">
+    <button onclick="startListening()">🎙 音声で話しかける</button>
+    <br><br>
+    <input type="text" id="userInput" placeholder="ここに入力して Enter または送信" />
+    <button onclick="sendTextMessage()">送信</button>
+  </div>
   <div id="response"></div>
 </body>
 </html>
